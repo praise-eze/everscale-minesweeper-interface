@@ -19,24 +19,15 @@ export const Home = () => {
     const account = permissions.accountInteraction;
     try {
       console.log("called2");
-
+      console.log(publicKey.toString());
       const response = await minesweeperinstance.methods
         .createBoard({
           sweepercode: SWEEPER_CODE,
         })
-        .send({
-          from: account.address.toString(),
-          amount: "1",
-          bounce: true,
-        });
-      /* .sendExternal({
-          publicKey,
-          withoutSignature: true,
-        });*/
+        .sendExternal({ pubkey: publicKey });
       console.log(response);
       console.log("https://everscan.io/transactions/" + response.id.hash);
-      const trx = response.transaction;
-      console.log(trx);
+
       console.log("called3");
       console.log(account.address.toString());
       /* const latestboard = await minesweeperinstance.methods
@@ -44,9 +35,11 @@ export const Home = () => {
         .call(); */
 
       const latestboard = await minesweeperinstance.methods
-        .lastestBoardWithMsg({})
+        .lastestBoardWithoutMsg({
+          _addr: new Address("" + account.address.toString() + ""),
+        })
         .call();
-      console.log(latestboard);
+      console.log(latestboard.value0);
 
       const gameAddress = 1;
       navigate(`/mineboard/${gameAddress}`);
